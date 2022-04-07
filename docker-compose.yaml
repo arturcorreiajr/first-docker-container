@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  front:
+    image: arturcorreiajunior/front-nginx:latest
+    ports:
+      - "8080:80"
+    restart: always
+    
+  back:
+    build: back/
+    volumes:
+      - ./back:/python/src
+      
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "database"
+    volumes:
+      - "./mysql:/var/lib/mysql"
