@@ -3,20 +3,37 @@ version: '3'
 services:
   front:
     image: arturcorreiajunior/front-nginx:latest
+    container_name: nginx
     ports:
       - "8080:80"
     restart: always
     
   back:
+    container_name: backend
     build: back/
     volumes:
       - ./back:/python/src
       
 
-  mysql:
+  mysql: 
     image: mysql:5.7
+    restart: always
+    container_name: mysql_version
     environment:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_DATABASE: "database"
     volumes:
       - "./mysql:/var/lib/mysql"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: my_admin
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
