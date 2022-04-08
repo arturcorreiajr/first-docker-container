@@ -3,13 +3,13 @@ version: '3'
 services:
   front:
     image: arturcorreiajunior/front-nginx:latest
-    container_name: nginx
+    container_name: front-end
     ports:
       - "8080:80"
     restart: always
     
   back:
-    container_name: backend
+    container_name: back-end
     build: back/
     volumes:
       - ./back:/python/src
@@ -18,16 +18,26 @@ services:
   mysql: 
     image: mysql:5.7
     restart: always
-    container_name: mysql_version
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_DATABASE: "database"
     volumes:
       - "./mysql:/var/lib/mysql"
 
+  mysql-zabbix: 
+    image: mysql:5.7
+    restart: always
+    container_name: mysql-zabbix
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "zabbix"
+    volumes:
+      - "./mysql_zabbix:/var/lib/mysql"
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: my_admin
+    container_name: my-admin
     links:
       - mysql
     environment:
@@ -37,3 +47,23 @@ services:
     restart: always
     ports:
       - 8081:80
+
+  zabbix-server:
+    restart: always
+    image: zabbix/zabbix-server-mysql:latest
+    container_name: zabbix-server
+    ports:
+      - "10050:10050"
+      - "10051:10051"
+    environment:
+      DB_SERVER_HOST: mysql-zabbix
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+
+
+
+ 
+
+
+        
+  
