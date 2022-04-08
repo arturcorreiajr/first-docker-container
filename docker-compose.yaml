@@ -13,10 +13,23 @@ services:
     volumes:
       - './zabbix/mysql:/var/lib/data'
     environment:
-      - MYSQL_ROOT_PASSWORD=carryontech
-      - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=zabbix
+
+  my-admin-zabbix:
+    image: phpmyadmin/phpmyadmin
+    container_name: my-admin-zabbix
+    links:
+      - mysql-zabbix
+    environment:
+      PMA_HOST: mysql-zabbix
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8083:80
 
   zabbix-server:
     container_name: zabbix-server
@@ -34,7 +47,7 @@ services:
       - DB_SERVER_HOST=mysql-zabbix
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
+      - MYSQL_PASSWORD=root
     depends_on:
       - mysql-zabbix
 
@@ -53,7 +66,7 @@ services:
       - DB_SERVER_HOST=mysql-zabbix
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
+      - MYSQL_PASSWORD=root
       - PHP_TZ=America/Sao_Paulo
     depends_on:
       - mysql-zabbix
@@ -114,8 +127,8 @@ services:
       MYSQL_DATABASE: "database"
     volumes:
       - "./mysql:/var/lib/mysql"
-      
-  phpmyadmin:
+
+  my-admin:
     image: phpmyadmin/phpmyadmin
     container_name: my-admin
     links:
