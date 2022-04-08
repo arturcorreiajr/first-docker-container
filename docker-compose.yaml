@@ -20,6 +20,8 @@ services:
 
   my-admin-zabbix:
     image: phpmyadmin/phpmyadmin
+    networks:
+      - network-zabbix
     container_name: my-admin-zabbix
     links:
       - mysql-zabbix
